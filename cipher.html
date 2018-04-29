@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+<body>
+	<div id="root" class="container-fluid">
+		<div class='row'>
+			<div class='col-3'>
+				<div class='row'>
+					<div id='holder' class='col'>
+						<button class="btn btn-primary" onClick="reset()"> reset </button>
+						<button class="btn btn-primary" onClick="set()"> set </button>
+
+					</div>
+
+				</div>
+			</div>
+			<div class='col-9'>
+				<div>Messege to Encrypt</div>
+				<textarea id="before" cols=50 rows=5 onkeyup="cipher()"></textarea>
+				<hr>
+				<div>Encrypted messege / Messege to Decrypt </div>
+				<textarea id="after" cols=50 rows=5 ></textarea>
+				<button class="btn btn-primary" onClick="decrypt()"> decrypt </button>
+				<div>Decrypted Messege</div>
+				<textarea id="secret" cols=50 rows=5 ></textarea>
+				<hr>
+				<div>Key</div>
+				<textarea id="cipher-key" cols=50 rows=1 ></textarea>
+				<button class="btn btn-primary" onClick="setFromKey()"> set cipher </button>
+
+
+			</div>
+
+
+		</div>
+	</div>
+
+
+</body>
+<script>
+	var output = [];
+	for( var i = 0 ;i < 26; i++){
+		var holder = document.createElement("div");
+		holder.className = "row";
+		document.getElementById('holder').appendChild(holder);
+		var ele = document.createElement("div");
+		ele.innerHTML = String.fromCharCode(97+i);
+		ele.className = "col";
+		holder.appendChild(ele);
+		output[i] = document.createElement("input");
+		output[i].type = "text";
+		output[i].maxlength=1;
+		output[i].size=1;
+		output[i].id="key-"+i;
+		output[i].className = "col";
+		holder.appendChild(output[i]);
+	}
+	set();
+	function reset(){
+		for(var i = 0 ; i < 26; i++){
+			output[i].value = "";
+		}
+	}
+	function set(){
+		var charset = [];
+		for(var i = 0; i < 26; i++){
+			var let = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+			while(charset.includes(let)){
+				let = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+			}
+			charset.push(let);
+			document.getElementById('key-'+i).value = let;
+		}
+		console.log(charset);
+	}
+	function setFromKey(){
+		var key = document.getElementById("cipher-key").value;
+		for(var i = 0; i <26; i++){
+			document.getElementById("key-"+i).value=key.charAt(i);
+		}
+	}
+	function cipher(){
+		var key = [];
+		for(var j = 0 ; j < 26; j++){
+			key[j] = document.getElementById("key-"+j).value;
+		}
+		var text = document.getElementById("before").value;
+		text=text.toLowerCase();
+		var cipher = "";
+		for(var i = 0; i < text.length; i++){
+			if(text.charCodeAt(i)>=97 && text.charCodeAt(i)<=122) {
+				cipher = cipher+key[text.charCodeAt(i)-97];
+			}
+			else {
+				cipher = cipher+text.charAt(i);
+			}
+
+		}
+		document.getElementById("after").value = cipher;
+		document.getElementById("cipher-key").value = key.toString().replace(/,/g,"");
+	}
+	function decrypt(){
+		var key = [];
+		for(var j = 0 ; j < 26; j++){
+			key[document.getElementById("key-"+j).value.charCodeAt(i)-97] = String.fromCharCode(97+j);
+		}
+		var text = document.getElementById("after").value;
+		text=text.toLowerCase();
+		var cipher = "";
+		for(var i = 0; i < text.length; i++){
+			if(text.charCodeAt(i)>=97 && text.charCodeAt(i)<=122) {
+				cipher = cipher+key[text.charCodeAt(i)-97];
+			}
+			else {
+				cipher = cipher+text.charAt(i);
+			}
+
+		}
+		document.getElementById("secret").value = cipher;
+
+	}
+</script>
+
+</html>
